@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Offer Letter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-w: 300px;
+      --sidebar-bg: #18251e;
+      --sidebar-border: rgba(255,255,255,0.07);
+      --sidebar-text: #c8dace;
+      --sidebar-muted: #5e7a65;
+      --sidebar-heading: #eaf2ec;
+      --green-bright: #4ade80;
+      --green-mid: #22c55e;
+      --green-dark: #16a34a;
+      --main-bg: #f0efea;
+      --card-bg: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --text: #1a201c;
+      --muted: #5c6b5e;
+      --red: #dc2626;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-md: 0 6px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 24px 56px rgba(0,0,0,0.16);
+      --t: 150ms ease;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Space Grotesk", sans-serif;
+      background: var(--main-bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── App layout ─────────────────────────── */
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ────────────────────────────── */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--sidebar-border);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    /* Brand header */
+    .brand {
+      padding: 26px 24px 20px;
+      border-bottom: 1px solid var(--sidebar-border);
+      flex-shrink: 0;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(74,222,128,0.09);
+      border: 1px solid rgba(74,222,128,0.18);
+      font: 500 10px/1 "IBM Plex Mono", monospace;
+      color: var(--green-bright);
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+
+    .brand-pill::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green-bright);
+      box-shadow: 0 0 5px var(--green-bright);
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--sidebar-heading);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .brand p {
+      font-size: 0.77rem;
+      color: var(--sidebar-muted);
+      line-height: 1.5;
+    }
+
+    /* Steps */
+    .steps { flex: 1; padding: 6px 0; }
+
+    .step {
+      border-left: 2.5px solid transparent;
+      transition: border-color var(--t);
+    }
+    .step[data-state="active"]  { border-left-color: var(--green-bright); }
+    .step[data-state="done"]    { border-left-color: rgba(34,197,94,0.45); }
+
+    .step-hd {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px 8px;
+    }
+
+    .step-badge {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font: 600 11px/1 "IBM Plex Mono", monospace;
+      background: rgba(255,255,255,0.05);
+      color: var(--sidebar-muted);
+      border: 1.5px solid rgba(255,255,255,0.09);
+      transition: background var(--t), color var(--t), border-color var(--t);
+      position: relative;
+    }
+
+    .step[data-state="active"] .step-badge {
+      background: rgba(74,222,128,0.1);
+      color: var(--green-bright);
+      border-color: rgba(74,222,128,0.35);
+    }
+
+    .step[data-state="done"] .step-badge {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+    }
+
+    .step-badge .num { transition: opacity var(--t); }
+    .step[data-state="done"] .step-badge .num { display: none; }
+    .step[data-state="done"] .step-badge::after { content: "✓"; color: #d4f9df; font-size: 12px; }
+
+    .step-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--sidebar-muted);
+      transition: color var(--t);
+      flex: 1;
+    }
+    .step[data-state="active"] .step-title,
+    .step[data-state="done"]   .step-title { color: var(--sidebar-text); }
+
+    .step-body {
+      padding: 0 20px 14px 56px;
+      display: grid;
+      gap: 9px;
+    }
+
+    /* File input styled button */
+    .file-row { position: relative; }
+
+    .file-face {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px dashed rgba(255,255,255,0.11);
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      font: 500 0.8rem/1.2 "Space Grotesk", sans-serif;
+      color: var(--sidebar-muted);
+      transition: border-color var(--t), background var(--t), color var(--t);
+      width: 100%;
+      text-align: left;
+    }
+    .file-face:hover {
+      border-color: rgba(74,222,128,0.3);
+      background: rgba(74,222,128,0.04);
+      color: var(--sidebar-text);
+    }
+    .file-face.loaded {
+      border-color: rgba(34,197,94,0.3);
+      border-style: solid;
+      background: rgba(34,197,94,0.05);
+      color: var(--green-bright);
+    }
+    .file-face .ico { flex-shrink: 0; font-size: 13px; }
+    .file-face .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+    input[type="file"].ghost {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Signature thumbnail */
+    .sig-preview-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sig-thumb {
+      flex-shrink: 0;
+      width: 64px;
+      height: 32px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .sig-preview-card .sig-name {
+      font-size: 0.75rem;
+      color: var(--sidebar-muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .crop-btn {
+      flex-shrink: 0;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid rgba(74,222,128,0.25);
+      background: rgba(74,222,128,0.06);
+      color: var(--green-bright);
+      font: 500 11px/1 "IBM Plex Mono", monospace;
+      cursor: pointer;
+      transition: background var(--t), border-color var(--t);
+      white-space: nowrap;
+    }
+    .crop-btn:hover {
+      background: rgba(74,222,128,0.14);
+      border-color: rgba(74,222,128,0.45);
+    }
+
+    /* Range */
+    .range-label {
+      font: 600 0.72rem/1 "Space Grotesk", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--sidebar-muted);
+    }
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--green-mid);
+      cursor: pointer;
+    }
+    .range-val {
+      font: 500 11px/1 "IBM Plex Mono", monospace;
+      color: var(--green-bright);
+      min-width: 46px;
+      text-align: right;
+    }
+
+    /* Text / date inputs */
+    .sidebar input[type="text"],
+    .sidebar input[type="date"] {
+      width: 100%;
+      padding: 8px 11px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.04);
+      color: var(--sidebar-text);
+      font: inherit;
+      font-size: 0.82rem;
+      transition: border-color var(--t);
+    }
+    .sidebar input[type="text"]:focus,
+    .sidebar input[type="date"]:focus {
+      outline: none;
+      border-color: rgba(74,222,128,0.38);
+    }
+    .sidebar input[type="text"]::placeholder { color: var(--sidebar-muted); }
+
+    /* Toggle row */
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      cursor: pointer;
+    }
+    .toggle-row input[type="checkbox"] {
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--green-mid);
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+    .toggle-row span {
+      font-size: 0.79rem;
+      color: var(--sidebar-muted);
+      line-height: 1.45;
+      transition: color var(--t);
+    }
+    .toggle-row:hover span { color: var(--sidebar-text); }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 0;
+      font: 600 0.83rem/1 "Space Grotesk", sans-serif;
+      cursor: pointer;
+      transition: transform var(--t), box-shadow var(--t), opacity var(--t), background var(--t);
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none !important; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #16a34a 0%, #0c6630 100%);
+      color: #d4f9df;
+      box-shadow: 0 6px 18px rgba(22,163,74,0.22);
+    }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 10px 26px rgba(22,163,74,0.32); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      color: var(--sidebar-text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255,255,255,0.09); }
+
+    .btn-danger {
+      background: rgba(220,38,38,0.09);
+      color: #f87171;
+      border: 1px solid rgba(220,38,38,0.18);
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(220,38,38,0.15); }
+
+    /* Sidebar status */
+    .sidebar-status {
+      padding: 13px 22px;
+      border-top: 1px solid var(--sidebar-border);
+      border-bottom: 1px solid var(--sidebar-border);
+      font-size: 0.79rem;
+      color: var(--sidebar-muted);
+      line-height: 1.55;
+      flex-shrink: 0;
+    }
+    .sidebar-status strong { color: var(--sidebar-text); }
+    .sidebar-status code {
+      font: 500 0.75rem/1 "IBM Plex Mono", monospace;
+      background: rgba(255,255,255,0.07);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* Sidebar footer hint */
+    .sidebar-footer {
+      padding: 11px 22px 18px;
+      font: 400 0.7rem/1.7 "IBM Plex Mono", monospace;
+      color: rgba(94,122,101,0.7);
+      flex-shrink: 0;
+    }
+
+    /* ── Workspace ─────────────────────────────── */
+    .workspace {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      min-height: 100vh;
+    }
+
+    .ws-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ws-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .ws-header p { font-size: 0.83rem; color: var(--muted); }
+
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .legend span {
+      font: 500 10px/1 "IBM Plex Mono", monospace;
+      color: var(--muted);
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.07);
+      white-space: nowrap;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 72px 32px;
+      border: 1.5px dashed rgba(0,0,0,0.11);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.45);
+    }
+    .empty-icon { font-size: 2.6rem; margin-bottom: 14px; opacity: 0.45; }
+    .empty-state h3 { font-size: 1.05rem; margin-bottom: 7px; }
+    .empty-state p {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* Pages */
+    .pages { display: grid; gap: 22px; }
+
+    .page-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .page-card-hd {
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9f8f5;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-card-hd strong { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+    .page-card-hd span  { font: 500 11px/1 "IBM Plex Mono", monospace; color: rgba(0,0,0,0.3); }
+
+    .page-stage {
+      position: relative;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    .page-stage canvas { display: block; width: 100%; height: auto; }
+
+    /* Signature overlays */
+    .sig {
+      position: absolute;
+      user-select: none;
+      touch-action: none;
+      cursor: grab;
+      transform-origin: top left;
+    }
+    .sig.dragging { cursor: grabbing; }
+    .sig.selected img       { outline: 2px solid rgba(22,163,74,0.7); outline-offset: 3px; border-radius: 2px; }
+    .sig.selected .sig-caption { outline: 2px solid rgba(22,163,74,0.7); outline-offset: 3px; }
+    .sig img {
+      display: block; width: 100%;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.13));
+    }
+    .sig-caption {
+      margin-top: 3px;
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(255,252,248,0.95);
+      color: #2c3a2e;
+      font: 500 11px/1.35 "IBM Plex Mono", monospace;
+      white-space: pre-wrap;
+      pointer-events: none;
+    }
+
+    /* ── Crop Modal ──────────────────────────── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,18,12,0.72);
+      backdrop-filter: blur(7px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-backdrop[hidden] { display: none; }
+
+    .modal-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 26px;
+      width: 100%;
+      max-width: 740px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .modal-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-hd h2 { font-size: 1.05rem; font-weight: 700; }
+
+    .modal-close {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(0,0,0,0.06);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--t);
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.12); }
+
+    .modal-hint { font-size: 0.82rem; color: var(--muted); }
+
+    .crop-area {
+      flex: 1;
+      overflow: auto;
+      background: #eeecea;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      min-height: 180px;
+      max-height: 460px;
+    }
+
+    /* Canvases stacked exactly */
+    .crop-canvases {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+      max-width: 100%;
+    }
+
+    #cropCanvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 5px;
+    }
+
+    #cropOverlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      border-radius: 5px;
+    }
+
+    .modal-ft {
+      display: flex;
+      gap: 9px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .modal-ft .btn { width: auto; padding: 9px 20px; }
+    .modal-ft .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .modal-ft .btn-outline:hover { background: rgba(0,0,0,0.04); }
+    .modal-ft .btn-green {
+      background: linear-gradient(135deg, #16a34a 0%, #0c6630 100%);
+      color: #d4f9df;
+      box-shadow: 0 4px 12px rgba(22,163,74,0.2);
+    }
+    .modal-ft .btn-green:hover { box-shadow: 0 7px 18px rgba(22,163,74,0.3); }
+
+    /* ── Responsive ──────────────────────────── */
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .workspace { padding: 20px 16px; min-height: auto; }
+      :root { --sidebar-w: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ════ Sidebar ════ -->
+    <aside class="sidebar">
+
+      <div class="brand">
+        <div class="brand-pill">LOCAL &nbsp;·&nbsp; PRIVATE</div>
+        <h1>Offer Letter Signer</h1>
+        <p>Everything runs in your browser. No files are uploaded anywhere.</p>
+      </div>
+
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step" id="step-1" data-state="active">
+          <div class="step-hd">
+            <div class="step-badge"><span class="num">1</span></div>
+            <span class="step-title">Load PDF</span>
+          </div>
+          <div class="step-body">
+            <div class="file-row">
+              <div class="file-face" id="pdfFace">
+                <span class="ico">📄</span>
+                <span class="lbl" id="pdfLabel">Choose PDF file…</span>
+              </div>
+              <input id="pdfFile" type="file" accept="application/pdf" class="ghost" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" id="step-2" data-state="pending">
+          <div class="step-hd">
+            <div class="step-badge"><span class="num">2</span></div>
+            <span class="step-title">Load Signature</span>
+          </div>
+          <div class="step-body">
+            <div class="file-row">
+              <div class="file-face" id="sigFace">
+                <span class="ico">✍️</span>
+                <span class="lbl" id="sigLabel">Choose image file…</span>
+              </div>
+              <input id="sigFile" type="file" accept="image/*" class="ghost" />
+            </div>
+            <div id="sigPreviewCard" class="sig-preview-card" hidden>
+              <img id="sigThumb" class="sig-thumb" alt="Signature" />
+              <span class="sig-name" id="sigPreviewName"></span>
+              <button id="openCropBtn" class="crop-btn">✂ Crop</button>
+            </div>
+            <div style="font-size:0.73rem;color:var(--sidebar-muted);line-height:1.45">
+              White background is removed automatically.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step" id="step-3" data-state="pending">
+          <div class="step-hd">
+            <div class="step-badge"><span class="num">3</span></div>
+            <span class="step-title">Place &amp; Configure</span>
+          </div>
+          <div class="step-body">
+            <div>
+              <div class="range-label" style="margin-bottom:6px">Signature width</div>
+              <div class="range-row">
+                <input id="sigWidth" type="range" min="80" max="340" step="5" value="180" />
+                <span class="range-val" id="sigWidthValue">180 px</span>
+              </div>
+            </div>
+            <input id="signerName" type="text" placeholder="Name (optional caption)" />
+            <input id="signDate" type="date" />
+            <label class="toggle-row">
+              <input id="showCaption" type="checkbox" />
+              <span>Show name &amp; date below each placement</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step" id="step-4" data-state="pending">
+          <div class="step-hd">
+            <div class="step-badge"><span class="num">4</span></div>
+            <span class="step-title">Export</span>
+          </div>
+          <div class="step-body" style="gap:7px">
+            <button id="downloadPdf" class="btn btn-primary" disabled>↓ Export Signed PDF</button>
+            <button id="removeSelected" class="btn btn-ghost" disabled>Remove Selected</button>
+            <button id="clearPage" class="btn btn-danger" disabled>Clear Page Signatures</button>
+          </div>
+        </div>
+
+      </div><!-- /steps -->
+
+      <div class="sidebar-status" id="status">
+        <strong>Ready.</strong> Load the PDF and signature image to begin.
+      </div>
+
+      <div class="sidebar-footer">
+        Click page → place &nbsp;·&nbsp; Drag → move &nbsp;·&nbsp; Click sig → select
+      </div>
+
+    </aside>
+
+    <!-- ════ Workspace ════ -->
+    <main class="workspace">
+      <div class="ws-header">
+        <div>
+          <h2>Document Preview</h2>
+          <p id="wsSubtitle">Load a PDF to preview its pages here.</p>
+        </div>
+        <div class="legend">
+          <span>Click page → place</span>
+          <span>Drag → move</span>
+          <span>Click sig → select</span>
+        </div>
+      </div>
+
+      <div id="pages" class="pages">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3>No document loaded</h3>
+          <p>Select the offer letter PDF from the sidebar. Then load your signature and click anywhere on a page to place it.</p>
+        </div>
+      </div>
+    </main>
+
+  </div><!-- /app -->
+
+  <!-- ════ Crop Modal ════ -->
+  <div id="cropModal" class="modal-backdrop" hidden>
+    <div class="modal-card">
+      <div class="modal-hd">
+        <h2>Crop Signature</h2>
+        <button id="cropClose" class="modal-close" title="Close">✕</button>
+      </div>
+      <p class="modal-hint">Drag to draw a selection. The white background has already been removed. Press <kbd style="font-family:inherit;background:rgba(0,0,0,0.07);padding:1px 5px;border-radius:4px;font-size:0.78rem">Esc</kbd> to cancel.</p>
+      <div class="crop-area">
+        <div class="crop-canvases" id="cropCanvases">
+          <canvas id="cropCanvas"></canvas>
+          <canvas id="cropOverlay"></canvas>
+        </div>
+      </div>
+      <div class="modal-ft">
+        <button id="skipCrop"  class="btn btn-outline">Use Full Image</button>
+        <button id="applyCrop" class="btn btn-green">Apply Crop</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script type="module">
+    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+    const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+
+    // ── State ───────────────────────────────────
+    const state = {
+      pdfBytes: null,
+      pdfName: "",
+      pdfjsDoc: null,
+      signaturePngUrl: "",
+      signaturePngBytes: null,
+      signatureAspect: 3.2,
+      sigFileName: "",
+      placements: [],
+      selectedPlacementId: null,
+      dragging: null,
+    };
+
+    // ── Refs ────────────────────────────────────
+    const $ = id => document.getElementById(id);
+    const els = {
+      pdfFile:       $("pdfFile"),
+      sigFile:       $("sigFile"),
+      pdfFace:       $("pdfFace"),
+      sigFace:       $("sigFace"),
+      pdfLabel:      $("pdfLabel"),
+      sigLabel:      $("sigLabel"),
+      sigWidth:      $("sigWidth"),
+      sigWidthValue: $("sigWidthValue"),
+      signerName:    $("signerName"),
+      signDate:      $("signDate"),
+      showCaption:   $("showCaption"),
+      removeSelected:$("removeSelected"),
+      clearPage:     $("clearPage"),
+      downloadPdf:   $("downloadPdf"),
+      status:        $("status"),
+      pages:         $("pages"),
+      wsSubtitle:    $("wsSubtitle"),
+      sigPreviewCard:$("sigPreviewCard"),
+      sigThumb:      $("sigThumb"),
+      sigPreviewName:$("sigPreviewName"),
+      openCropBtn:   $("openCropBtn"),
+      cropModal:     $("cropModal"),
+      cropCanvas:    $("cropCanvas"),
+      cropOverlay:   $("cropOverlay"),
+      applyCrop:     $("applyCrop"),
+      skipCrop:      $("skipCrop"),
+      cropClose:     $("cropClose"),
+    };
+
+    els.signDate.value = new Date().toISOString().slice(0, 10);
+    updateWidthLabel();
+    syncButtons();
+    updateSteps();
+
+    // ── Listeners ───────────────────────────────
+    els.pdfFile.addEventListener("change",  handlePdfFile);
+    els.sigFile.addEventListener("change",  handleSignatureFile);
+    els.sigWidth.addEventListener("input",  () => { updateWidthLabel(); refreshPreviews(); });
+    els.removeSelected.addEventListener("click", removeSelected);
+    els.clearPage.addEventListener("click",      clearPage);
+    els.downloadPdf.addEventListener("click",    exportPdf);
+    els.showCaption.addEventListener("change",   refreshPreviews);
+    els.signerName.addEventListener("input",     refreshPreviews);
+    els.signDate.addEventListener("input",       refreshPreviews);
+    window.addEventListener("resize",            refreshPreviews);
+    els.openCropBtn.addEventListener("click",    openCrop);
+    els.applyCrop.addEventListener("click",      applyCrop);
+    els.skipCrop.addEventListener("click",       closeCrop);
+    els.cropClose.addEventListener("click",      closeCrop);
+    els.cropModal.addEventListener("click", e => { if (e.target === els.cropModal) closeCrop(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeCrop(); });
+
+    // ── Step states ─────────────────────────────
+    function updateSteps() {
+      const hasPdf = Boolean(state.pdfBytes);
+      const hasSig = Boolean(state.signaturePngBytes);
+      const hasPlace = state.placements.length > 0;
+      setStep(1, hasPdf ? "done" : "active");
+      setStep(2, hasSig ? "done" : hasPdf ? "active" : "pending");
+      setStep(3, (hasPdf && hasSig) ? "active" : "pending");
+      setStep(4, hasPlace ? "active" : "pending");
+    }
+
+    function setStep(n, s) {
+      const el = $(`step-${n}`);
+      if (el) el.dataset.state = s;
+    }
+
+    // ── Helpers ─────────────────────────────────
+    function updateWidthLabel() {
+      els.sigWidthValue.textContent = `${els.sigWidth.value} px`;
+    }
+
+    function setStatus(html) { els.status.innerHTML = html; }
+
+    function syncButtons() {
+      const hasPdf = Boolean(state.pdfBytes);
+      const hasSig = Boolean(state.signaturePngBytes);
+      const sel    = getSelected();
+      els.downloadPdf.disabled  = !(hasPdf && hasSig && state.placements.length);
+      els.removeSelected.disabled = !sel;
+      els.clearPage.disabled      = !sel;
+    }
+
+    function captionText() {
+      if (!els.showCaption.checked) return "";
+      const n = els.signerName.value.trim();
+      const d = els.signDate.value.trim();
+      return [n, d].filter(Boolean).join("\n");
+    }
+
+    function captionPixelH() {
+      const t = captionText();
+      if (!t) return 0;
+      return 20 + t.split("\n").length * 16;
+    }
+
+    function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+    function toBase64(bytes) {
+      let s = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk)
+        s += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      return btoa(s);
+    }
+
+    function escHtml(v) {
+      return String(v).replace(/[&<>"']/g, c =>
+        ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
+    }
+
+    // ── PDF loading ──────────────────────────────
+    async function handlePdfFile(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      state.pdfBytes = new Uint8Array(await file.arrayBuffer());
+      state.pdfName  = file.name;
+      state.placements = [];
+      state.selectedPlacementId = null;
+
+      els.pdfLabel.textContent = file.name;
+      els.pdfFace.classList.add("loaded");
+      setStatus(`<strong>Loading…</strong> Rendering <code>${escHtml(file.name)}</code>`);
+
+      try {
+        state.pdfjsDoc = await pdfjsLib.getDocument({ data: state.pdfBytes.slice() }).promise;
+        els.wsSubtitle.textContent =
+          `${state.pdfjsDoc.numPages} page(s) · click anywhere on a page to place the signature`;
+        await renderPages();
+        setStatus(
+          `<strong>PDF ready.</strong> ${state.pdfjsDoc.numPages} page(s). ` +
+          (state.signaturePngBytes ? `Click a page to place the signature.` : `Load the signature image next.`)
+        );
+      } catch (err) {
+        console.error(err);
+        state.pdfBytes = null; state.pdfjsDoc = null;
+        els.pdfFace.classList.remove("loaded");
+        els.pdfLabel.textContent = "Choose PDF file…";
+        els.pages.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load PDF</h3><p>${escHtml(err?.message || err)}</p></div>`;
+        setStatus(`<strong>Error.</strong> ${escHtml(err?.message || err)}`);
+      }
+
+      updateSteps(); syncButtons();
+    }
+
+    // ── Signature loading ────────────────────────
+    async function handleSignatureFile(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      state.sigFileName = file.name;
+      els.sigLabel.textContent = file.name;
+      setStatus(`<strong>Processing…</strong> Removing background from <code>${escHtml(file.name)}</code>`);
+
+      try {
+        const processed = await buildTransparentSig(await file.arrayBuffer());
+        applySig(processed);
+        els.sigFace.classList.add("loaded");
+        setStatus(
+          `<strong>Signature ready.</strong> Background removed. ` +
+          (state.pdfjsDoc ? `Click a page to place it. Use ✂&nbsp;Crop to trim if needed.` : `Load the PDF next.`)
+        );
+      } catch (err) {
+        console.error(err);
+        state.signaturePngUrl = ""; state.signaturePngBytes = null;
+        els.sigFace.classList.remove("loaded");
+        els.sigLabel.textContent = "Choose image file…";
+        setStatus(`<strong>Error.</strong> ${escHtml(err?.message || err)}`);
+      }
+
+      updateSteps(); syncButtons();
+    }
+
+    function applySig(processed) {
+      state.signaturePngUrl    = processed.dataUrl;
+      state.signaturePngBytes  = processed.bytes;
+      state.signatureAspect    = processed.aspect;
+
+      els.sigThumb.src         = processed.dataUrl;
+      els.sigPreviewName.textContent = state.sigFileName;
+      els.sigPreviewCard.hidden = false;
+    }
+
+    async function buildTransparentSig(arrayBuffer) {
+      const blob = new Blob([arrayBuffer]);
+      const img = await loadImage(URL.createObjectURL(blob));
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      canvas.width  = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = imgData.data;
+      const threshold = 225;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2];
+        if (r > threshold && g > threshold && b > threshold) {
+          d[i+3] = 0;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      const outCanvas = document.createElement("canvas");
+      const outCtx = outCanvas.getContext("2d");
+      outCanvas.width  = img.naturalWidth;
+      outCanvas.height = img.naturalHeight;
+      outCtx.drawImage(canvas, 0, 0);
+
+      const dataUrl = outCanvas.toDataURL("image/png");
+      const bytes   = dataURLToBytes(dataUrl);
+
+      return { dataUrl, bytes, aspect: img.naturalWidth / img.naturalHeight };
+    }
+
+    function loadImage(src) {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = rej;
+        img.src = src;
+      });
+    }
+
+    function dataURLToBytes(dataUrl) {
+      const base64 = dataUrl.split(',')[1];
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes;
+    }
+
+    // ── Crop Modal ──────────────────────────────
+    let cropState = { isSelecting: false, startX: 0, startY: 0, endX: 0, endY: 0, hasSelection: false };
+
+    function openCrop() {
+      if (!state.signaturePngUrl) return;
+      cropState = { isSelecting: false, startX: 0, startY: 0, endX: 0, endY: 0, hasSelection: false };
+
+      const canvas = els.cropCanvas;
+      const ctx = canvas.getContext("2d");
+      const overlay = els.cropOverlay;
+      const octx = overlay.getContext("2d");
+
+      loadImage(state.signaturePngUrl).then(img => {
+        const maxW = 680, maxH = 420;
+        const scale = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
+        canvas.width  = Math.floor(img.naturalWidth  * scale);
+        canvas.height = Math.floor(img.naturalHeight * scale);
+        overlay.width  = canvas.width;
+        overlay.height = canvas.height;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        octx.clearRect(0, 0, overlay.width, overlay.height);
+
+        els.cropModal.hidden = false;
+      });
+    }
+
+    function closeCrop() {
+      els.cropModal.hidden = true;
+      const octx = els.cropOverlay.getContext("2d");
+      octx.clearRect(0, 0, els.cropOverlay.width, els.cropOverlay.height);
+      cropState = { isSelecting: false, startX: 0, startY: 0, endX: 0, endY: 0, hasSelection: false };
+    }
+
+    els.cropOverlay.addEventListener("mousedown", e => {
+      const rect = els.cropOverlay.getBoundingClientRect();
+      cropState.isSelecting = true;
+      cropState.startX = e.clientX - rect.left;
+      cropState.startY = e.clientY - rect.top;
+      cropState.hasSelection = false;
+    });
+    document.addEventListener("mousemove", e => {
+      if (!cropState.isSelecting) return;
+      const rect = els.cropOverlay.getBoundingClientRect();
+      cropState.endX = clamp(e.clientX - rect.left, 0, els.cropOverlay.width);
+      cropState.endY = clamp(e.clientY - rect.top, 0, els.cropOverlay.height);
+      drawCropOverlay();
+    });
+    document.addEventListener("mouseup", () => {
+      if (!cropState.isSelecting) return;
+      cropState.isSelecting = false;
+      cropState.hasSelection = true;
+      drawCropOverlay();
+    });
+
+    function drawCropOverlay() {
+      const overlay = els.cropOverlay;
+      const octx = overlay.getContext("2d");
+      octx.clearRect(0, 0, overlay.width, overlay.height);
+
+      if (cropState.hasSelection || cropState.isSelecting) {
+        const x = Math.min(cropState.startX, cropState.endX);
+        const y = Math.min(cropState.startY, cropState.endY);
+        const w = Math.abs(cropState.endX - cropState.startX);
+        const h = Math.abs(cropState.endY - cropState.startY);
+
+        if (w > 0 && h > 0) {
+          octx.fillStyle = "rgba(22,163,74,0.18)";
+          octx.fillRect(x, y, w, h);
+          octx.strokeStyle = "rgba(22,163,74,0.9)";
+          octx.lineWidth = 2;
+          octx.strokeRect(x, y, w, h);
+        }
+      }
+    }
+
+    async function applyCrop() {
+      if (!cropState.hasSelection) return;
+
+      const x = Math.min(cropState.startX, cropState.endX);
+      const y = Math.min(cropState.startY, cropState.endY);
+      const w = Math.abs(cropState.endX - cropState.startX);
+      const h = Math.abs(cropState.endY - cropState.startY);
+
+      const original = await loadImage(state.signaturePngUrl);
+      const scaleX = original.naturalWidth / els.cropCanvas.width;
+      const scaleY = original.naturalHeight / els.cropCanvas.height;
+      const sx = Math.floor(x * scaleX);
+      const sy = Math.floor(y * scaleY);
+      const sw = Math.floor(w * scaleX);
+      const sh = Math.floor(h * scaleY);
+
+      const out = document.createElement("canvas");
+      out.width = sw; out.height = sh;
+      out.getContext("2d").drawImage(original, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      const dataUrl = out.toDataURL("image/png");
+      const bytes   = dataURLToBytes(dataUrl);
+
+      applySig({ dataUrl, bytes, aspect: sw / Math.max(1, sh) });
+      closeCrop();
+    }
+
+    // ── Rendering ────────────────────────────────
+    async function renderPages() {
+      if (!state.pdfjsDoc) return;
+      els.pages.innerHTML = "";
+
+      for (let i = 1; i <= state.pdfjsDoc.numPages; i++) {
+        const page = await state.pdfjsDoc.getPage(i);
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d");
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const stage = document.createElement("div");
+        stage.className = "page-stage";
+        stage.dataset.page = i;
+        stage.appendChild(canvas);
+
+        const card = document.createElement("div");
+        card.className = "page-card";
+        const hd = document.createElement("div");
+        hd.className = "page-card-hd";
+        hd.innerHTML = `<strong>Page ${i}</strong><span>${Math.round(viewport.width)}×${Math.round(viewport.height)}</span>`;
+        card.appendChild(hd);
+        card.appendChild(stage);
+        els.pages.appendChild(card);
+
+        stage.addEventListener("click", e => onPageClick(e, i, stage, canvas));
+      }
+    }
+
+    function onPageClick(e, pageNum, stage, canvas) {
+      if (!state.signaturePngUrl) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      const widthPx = parseInt(els.sigWidth.value, 10);
+      const heightPx = widthPx / state.signatureAspect;
+
+      const id = `sig-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const placement = {
+        id, page: pageNum,
+        pdfX: x, pdfY: y,
+        pdfW: widthPx, pdfH: heightPx,
+        imgW: widthPx, imgH: heightPx
+      };
+      state.placements.push(placement);
+
+      addSigElement(stage, placement);
+      selectPlacement(id);
+      updateSteps();
+      syncButtons();
+      setStatus(`<strong>Placed.</strong> Drag to adjust. Click to select. Press Delete to remove.`);
+    }
+
+    function addSigElement(stage, p) {
+      const el = document.createElement("div");
+      el.className = "sig";
+      el.id = p.id;
+      el.style.left = `${p.pdfX}px`;
+      el.style.top = `${p.pdfY}px`;
+      el.style.width = `${p.imgW}px`;
+
+      const img = document.createElement("img");
+      img.src = state.signaturePngUrl;
+      img.style.height = `${p.imgH}px`;
+      el.appendChild(img);
+
+      const caption = captionText();
+      if (caption) {
+        const cap = document.createElement("div");
+        cap.className = "sig-caption";
+        cap.textContent = caption;
+        el.appendChild(cap);
+      }
+
+      stage.appendChild(el);
+
+      el.addEventListener("mousedown", e => startDrag(e, p.id));
+      el.addEventListener("click", e => { e.stopPropagation(); selectPlacement(p.id); });
+    }
+
+    function refreshPreviews() {
+      document.querySelectorAll(".sig").forEach(el => {
+        const p = state.placements.find(x => x.id === el.id);
+        if (!p) return;
+        el.style.width = `${p.imgW}px`;
+        el.querySelector("img").style.height = `${p.imgH}px`;
+        const oldCap = el.querySelector(".sig-caption");
+        if (oldCap) oldCap.remove();
+        const caption = captionText();
+        if (caption) {
+          const cap = document.createElement("div");
+          cap.className = "sig-caption";
+          cap.textContent = caption;
+          el.appendChild(cap);
+        }
+      });
+    }
+
+    function startDrag(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      selectPlacement(id);
+      const p = state.placements.find(x => x.id === id);
+      if (!p) return;
+
+      const stage = document.querySelector(`.page-stage[data-page="${p.page}"]`);
+      const canvas = stage.querySelector("canvas");
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const origPdfX = p.pdfX;
+      const origPdfY = p.pdfY;
+
+      state.dragging = {
+        move(e2) {
+          const dx = (e2.clientX - startX) * scaleX;
+          const dy = (e2.clientY - startY) * scaleY;
+          p.pdfX = origPdfX + dx;
+          p.pdfY = origPdfY + dy;
+          const el = document.getElementById(id);
+          el.style.left = `${p.pdfX}px`;
+          el.style.top = `${p.pdfY}px`;
+        },
+        up() {
+          state.dragging = null;
+          document.removeEventListener("mousemove", state.dragging.move);
+          document.removeEventListener("mouseup", state.dragging.up);
+        }
+      };
+
+      document.addEventListener("mousemove", state.dragging.move);
+      document.addEventListener("mouseup", state.dragging.up);
+    }
+
+    function selectPlacement(id) {
+      document.querySelectorAll(".sig.selected").forEach(el => el.classList.remove("selected"));
+      const el = document.getElementById(id);
+      if (el) el.classList.add("selected");
+      state.selectedPlacementId = id;
+      syncButtons();
+    }
+
+    function getSelected() {
+      return state.placements.find(x => x.id === state.selectedPlacementId) || null;
+    }
+
+    function removeSelected() {
+      const p = getSelected();
+      if (!p) return;
+      const el = document.getElementById(p.id);
+      if (el) el.remove();
+      state.placements = state.placements.filter(x => x.id !== p.id);
+      state.selectedPlacementId = null;
+      syncButtons();
+      updateSteps();
+    }
+
+    function clearPage() {
+      const p = getSelected();
+      if (!p) return;
+      const toRemove = state.placements.filter(x => x.page === p.page);
+      toRemove.forEach(x => {
+        const el = document.getElementById(x.id);
+        if (el) el.remove();
+      });
+      state.placements = state.placements.filter(x => x.page !== p.page);
+      state.selectedPlacementId = null;
+      syncButtons();
+      updateSteps();
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Delete" || e.key === "Backspace") {
+        if (state.selectedPlacementId) removeSelected();
+      }
+    });
+
+    // ── Export ───────────────────────────────────
+    async function exportPdf() {
+      if (!state.pdfBytes || !state.signaturePngBytes || !state.placements.length) return;
+      setStatus(`<strong>Exporting…</strong> Embedding signature(s) into PDF`);
+
+      try {
+        const pdfDoc = await PDFDocument.load(state.pdfBytes.slice());
+        const sigImg = await pdfDoc.embedPng(state.signaturePngBytes);
+
+        const pages = pdfDoc.getPages();
+
+        for (const p of state.placements) {
+          const page = pages[p.page - 1];
+          const { width, height } = page.getSize();
+
+          const pdfW = (p.pdfW / 150) * 72;
+          const pdfH = (p.pdfH / 150) * 72;
+          const x = (p.pdfX / 150) * 72;
+          const y = height - ((p.pdfY / 150) * 72) - pdfH;
+
+          page.drawImage(sigImg, { x, y, width: pdfW, height: pdfH });
+
+          const caption = captionText();
+          if (caption) {
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const lines = caption.split("\n");
+            const fontSize = 10;
+            const lineHeight = 12;
+            const capY = y - 14;
+            lines.forEach((line, i) => {
+              page.drawText(line, { x, y: capY - (i * lineHeight), size: fontSize, font, color: rgb(0.2, 0.2, 0.2) });
+            });
+          }
+        }
+
+        const outBytes = await pdfDoc.save();
+        const blob = new Blob([outBytes], { type: "application/pdf" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = state.pdfName.replace(/\.pdf$/i, "") + "_signed.pdf";
+        a.click();
+        URL.revokeObjectURL(a.href);
+
+        setStatus(`<strong>Exported.</strong> Download started.`);
+      } catch (err) {
+        console.error(err);
+        setStatus(`<strong>Error.</strong> ${escHtml(err?.message || err)}`);
+      }
+    }
+  </script>
+</body>
+</html>
