@@ -17,7 +17,7 @@ A client-side PDF signing tool that runs entirely in your browser. No files are 
 
 ## Demo
 
-Visit the live demo: [https://yourusername.github.io/offer-letter-signer](https://yourusername.github.io/offer-letter-signer)
+Visit the live demo: [https://ank-man.github.io/SignTheLetter](https://ank-man.github.io/SignTheLetter)
 
 ## How to Use
 
@@ -61,10 +61,10 @@ To run locally, simply open `index.html` in a modern web browser:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/offer-letter-signer.git
+git clone https://github.com/ank-man/SignTheLetter.git
 
 # Navigate to directory
-cd offer-letter-signer
+cd SignTheLetter
 
 # Open in browser (macOS)
 open index.html
@@ -101,7 +101,7 @@ This project is configured to work with GitHub Pages out of the box:
 4. Select branch: **main** (or **master**)
 5. Select folder: **/ (root)**
 6. Click **Save**
-7. Your site will be live at `https://yourusername.github.io/offer-letter-signer`
+7. Your site will be live at `https://ank-man.github.io/SignTheLetter`
 
 ## License
 
